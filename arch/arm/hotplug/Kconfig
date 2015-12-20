@@ -9,3 +9,8 @@ config CLUSTER_PLUG
           This hotplug implementation always keeps the big cluster
           online, and only activates the little cluster for heavy
           parallel loads.
+config MAKO_HOTPLUG
+ 	bool "Mako Hotplug"
+ 	default n
+ 	help
+ 	  Mako Hotplug: A custom hotplug by fransico franco
