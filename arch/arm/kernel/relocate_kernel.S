@@ -2,11 +2,11 @@
  * relocate_kernel.S - put the kernel image in place to boot
  */
 
+#include <linux/linkage.h>
 #include <asm/assembler.h>
 #include <asm/kexec.h>
 
-	.globl relocate_new_kernel
-relocate_new_kernel:
+ENTRY(relocate_new_kernel)
 
 	ldr	r0,kexec_indirection_page
 	ldr	r1,kexec_start_address
@@ -79,6 +79,8 @@ kexec_mach_type:
 	.globl kexec_boot_atags
 kexec_boot_atags:
 	.long	0x0
+
+ENDPROC(relocate_new_kernel)
 
 relocate_new_kernel_end:
 
