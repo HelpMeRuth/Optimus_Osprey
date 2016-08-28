@@ -1,6 +1,6 @@
 VERSION = 3
 PATCHLEVEL = 10
-SUBLEVEL = 102
+SUBLEVEL = 103
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
@@ -345,6 +345,11 @@ DEPMOD		= /sbin/depmod
 PERL		= perl
 CHECK		= sparse
 
+# Try to always use GNU ld
+ifneq ($(wildcard $(CROSS_COMPILE)ld.bfd),)
+LD		= $(CROSS_COMPILE)ld.bfd
+endif
+
 # Use the wrapper for the compiler.  This wrapper scans for new
 # warnings and causes the build to stop upon encountering them.
 CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
@@ -383,6 +388,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
+		   -Wno-misleading-indentation \
+		   -Wno-unused-const-variable \
+		   -Wno-shift-overflow \
+		   -Wno-bool-compare
 		   -std=gnu89
 
 KBUILD_AFLAGS_KERNEL :=
@@ -586,7 +595,7 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else
-KBUILD_CFLAGS	+= -O2
+KBUILD_CFLAGS	+= -O3
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
