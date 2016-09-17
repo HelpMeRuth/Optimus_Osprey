@@ -2,7 +2,7 @@
 set -e
 export ARCH=arm
 export SUBARCH=arm
-export CROSS_COMPILE=/home/ruthger/android/arm-eabi-6.x/bin/arm-eabi-
+export CROSS_COMPILE=/home/ruthger/android/arm-eabi-5.x/bin/arm-eabi-
 make osprey_defconfig
 #make menuconfig
 rm -f arch/arm/boot/dts/*.dtb
