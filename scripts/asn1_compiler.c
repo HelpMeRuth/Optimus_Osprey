@@ -1356,6 +1356,14 @@ static void render_out_of_line_list(FILE *out)
 		default:
 			/* shouldn't go here */
 			break;
+		default:
+			break;
+		default:
+			break;
+		default:
+			break;
+		default:
+			break;
 		}
 		if (e->action)
 			render_opcode(out, "_action(ACT_%s),\n",

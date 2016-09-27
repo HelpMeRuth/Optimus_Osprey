@@ -201,27 +201,40 @@ static int iio_trigger_attach_poll_func(struct iio_trigger *trig,
 	bool notinuse
 		= bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
 
-	/* Prevent the module from being removed whilst attached to a trigger */
-	__module_get(pf->indio_dev->info->driver_module);
+ 	/* Prevent the module from being removed whilst attached to a trigger */
+ 	__module_get(pf->indio_dev->info->driver_module);
+
+	/* Get irq number */
 	pf->irq = iio_trigger_get_irq(trig);
-	ret = request_threaded_irq(pf->irq, pf->h, pf->thread,
-				   pf->type, pf->name,
-				   pf);
-	if (ret < 0) {
-		module_put(pf->indio_dev->info->driver_module);
-		return ret;
-	}
+	if (pf->irq < 0)
+		goto out_put_module;
 
-	if (trig->ops && trig->ops->set_trigger_state && notinuse) {
-		ret = trig->ops->set_trigger_state(trig, true);
-		if (ret < 0)
-			module_put(pf->indio_dev->info->driver_module);
-	}
+	/* Request irq */
+ 	ret = request_threaded_irq(pf->irq, pf->h, pf->thread,
+ 				   pf->type, pf->name,
+ 				   pf);
+	if (ret < 0)
+		goto out_put_irq;
+ 
+	/* Enable trigger in driver */
+ 	if (trig->ops && trig->ops->set_trigger_state && notinuse) {
+ 		ret = trig->ops->set_trigger_state(trig, true);
+ 		if (ret < 0)
+			goto out_free_irq;
+ 	}
+ 
+ 	return ret;
 
+out_free_irq:
+	free_irq(pf->irq, pf);
+out_put_irq:
+	iio_trigger_put_irq(trig, pf->irq);
+out_put_module:
+	module_put(pf->indio_dev->info->driver_module);
 	return ret;
-}
-
-static int iio_trigger_detach_poll_func(struct iio_trigger *trig,
+ }
+ 
+ static int iio_trigger_detach_poll_func(struct iio_trigger *trig,
 					 struct iio_poll_func *pf)
 {
 	int ret = 0;
