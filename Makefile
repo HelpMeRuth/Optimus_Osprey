@@ -4,6 +4,10 @@ SUBLEVEL = 103
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
+# Added by SQK
+TOP := $(dir $(lastword $(MAKEFILE_LIST)))
+print-%  : ; @echo $* = $($*)
+
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
 # More info can be located in ./README
@@ -393,7 +397,6 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-shift-overflow \
 		   -Wno-bool-compare
 		   -std=gnu89
-
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -589,8 +592,6 @@ endif # $(dot-config)
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
-
-KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
@@ -1468,6 +1469,11 @@ endif
 clean := -f $(if $(KBUILD_SRC),$(srctree)/)scripts/Makefile.clean obj
 
 endif	# skip-makefile
+
+# dt image builder
+ifeq "$(TOP)" "./"
+include bootimage.mk
+endif
 
 PHONY += FORCE
 FORCE:
