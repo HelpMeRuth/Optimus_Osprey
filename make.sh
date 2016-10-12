@@ -2,13 +2,13 @@
 set -e
 export ARCH=arm
 export SUBARCH=arm
-export CROSS_COMPILE=/home/ruthger/android/arm-eabi-6.x/bin/arm-eabi-
+export CROSS_COMPILE=/home/ruthger/android/arm-eabi-5.x/bin/arm-eabi-
 make osprey_defconfig
-# make menuconfig i edit the defconfig directly.
+make menuconfig
 rm -f arch/arm/boot/dts/*.dtb
 rm -f arch/arm/boot/dt.img
 rm -f cwm_flash_zip/boot.img
-make CONFIG_NO_ERROR_ON_MISMATCH=y -j2 zImage
+make CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y -j2 zImage
 make -j2 dtimage
 make -j2 modules
 rm -rf kernel_install
