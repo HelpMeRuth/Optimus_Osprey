@@ -3,6 +3,8 @@ set -e
 rm -f arch/arm/boot/dts/*.dtb
 rm -f arch/arm/boot/dt.img
 rm -f cwm_flash_zip/boot.img
+make osprey_defconfig
+make menuconfig
 make -j10 zImage
 make -j10 dtimage
 make -j10 modules
