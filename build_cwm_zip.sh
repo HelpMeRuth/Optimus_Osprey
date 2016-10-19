@@ -3,8 +3,11 @@ set -e
 rm -f arch/arm/boot/dts/*.dtb
 rm -f arch/arm/boot/dt.img
 rm -f cwm_flash_zip/boot.img
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=/home/ruthger/android/arm-eabi-5.x/bin/arm-eabi-
 make osprey_defconfig
-make menuconfig
+#make menuconfig
 make -j10 zImage
 make -j10 dtimage
 make -j10 modules
